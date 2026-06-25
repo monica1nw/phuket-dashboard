@@ -31,14 +31,13 @@
   <!-- ══ FILTER BAR ══ -->
   <div class="filter-bar">
     <span class="filter-label"><i class="ti ti-calendar-month"></i> แสดงข้อมูลเดือน</span>
-    <div class="month-pills" id="monthPills">
-      <button class="pill" data-idx="0">ธ.ค. 68</button>
-      <button class="pill" data-idx="1">ม.ค. 69</button>
-      <button class="pill" data-idx="2">ก.พ. 69</button>
-      <button class="pill" data-idx="3">มี.ค. 69</button>
-      <button class="pill" data-idx="4">เม.ย. 69</button>
-      <button class="pill" data-idx="5">พ.ค. 69</button>
-      <button class="pill pill-all active" data-idx="all">ทั้งหมด</button>
+    <div class="month-nav">
+      <button class="pill pill-all active" id="btnAll">ทั้งหมด</button>
+      <div class="month-scroller">
+        <button class="nav-arrow" id="btnPrev"><i class="ti ti-chevron-left"></i></button>
+        <span class="month-display" id="monthDisplay">ธ.ค. 68</span>
+        <button class="nav-arrow" id="btnNext"><i class="ti ti-chevron-right"></i></button>
+      </div>
     </div>
   </div>
 
