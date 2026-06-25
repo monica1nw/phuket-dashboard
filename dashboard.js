@@ -64,7 +64,7 @@ const baseOpts = { responsive:true, maintainAspectRatio:false, plugins:{legend:{
 /* ══════════════════════════════════════════
    STATE
 ══════════════════════════════════════════ */
-let selectedIdx = 'all'; // 'all' or 0-5
+let selectedIdx = 'all';
 
 /* ══════════════════════════════════════════
    CHARTS
@@ -178,26 +178,18 @@ function updateAll(idx) {
   document.getElementById('kpi-pct').innerHTML       = pct + '<span class="kpi-unit">%</span>';
   document.getElementById('kpi-house').textContent   = fmt(DATA.house[kpiIdx]);
 
-  /* ── Trend charts: all months or highlight single ── */
+  /* ── Trend charts ── */
   if (isAll) {
-
     lineChart.data.labels = MONTHS_LABEL;
     lineChart.data.datasets[0].data = [...DATA.totalPop];
     lineChart.data.datasets[1].data = [...DATA.thaiPop];
     lineChart.data.datasets[2].data = [...DATA.foreignPop];
-
     lineChart.data.datasets[0].pointRadius = 4;
     lineChart.data.datasets[1].pointRadius = 3;
     lineChart.data.datasets[2].pointRadius = 3;
-
-    lineChart.data.datasets[0].pointBackgroundColor =
-        DATA.totalPop.map(() => SEA);
-
-    lineChart.data.datasets[1].pointBackgroundColor =
-        DATA.thaiPop.map(() => SEA_LT);
-
-    lineChart.data.datasets[2].pointBackgroundColor =
-        DATA.foreignPop.map(() => CORAL);
+    lineChart.data.datasets[0].pointBackgroundColor = DATA.totalPop.map(() => SEA);
+    lineChart.data.datasets[1].pointBackgroundColor = DATA.thaiPop.map(() => SEA_LT);
+    lineChart.data.datasets[2].pointBackgroundColor = DATA.foreignPop.map(() => CORAL);
 
     bdChart.data.labels = MONTHS_LABEL;
     bdChart.data.datasets[0].data = [...DATA.birth];
@@ -207,35 +199,18 @@ function updateAll(idx) {
     moveChart.data.datasets[0].data = [...DATA.moveIn];
     moveChart.data.datasets[1].data = [...DATA.moveOut];
 
-} else {
-
-    // ยังคงแสดงครบ 6 เดือน
+  } else {
     lineChart.data.labels = MONTHS_LABEL;
     lineChart.data.datasets[0].data = [...DATA.totalPop];
     lineChart.data.datasets[1].data = [...DATA.thaiPop];
     lineChart.data.datasets[2].data = [...DATA.foreignPop];
+    lineChart.data.datasets[0].pointRadius = DATA.totalPop.map((_, i) => i === idx ? 7 : 3);
+    lineChart.data.datasets[1].pointRadius = DATA.thaiPop.map((_, i) => i === idx ? 6 : 2);
+    lineChart.data.datasets[2].pointRadius = DATA.foreignPop.map((_, i) => i === idx ? 6 : 2);
+    lineChart.data.datasets[0].pointBackgroundColor = DATA.totalPop.map((_, i) => i === idx ? SEA : "#b7d7d5");
+    lineChart.data.datasets[1].pointBackgroundColor = DATA.thaiPop.map((_, i) => i === idx ? SEA_LT : "#d7ecea");
+    lineChart.data.datasets[2].pointBackgroundColor = DATA.foreignPop.map((_, i) => i === idx ? CORAL : "#f6c4b8");
 
-    // จุดปกติ
-    lineChart.data.datasets[0].pointRadius =
-        DATA.totalPop.map((_, i) => i === idx ? 7 : 3);
-
-    lineChart.data.datasets[1].pointRadius =
-        DATA.thaiPop.map((_, i) => i === idx ? 6 : 2);
-
-    lineChart.data.datasets[2].pointRadius =
-        DATA.foreignPop.map((_, i) => i === idx ? 6 : 2);
-
-    // เปลี่ยนสีเฉพาะจุดที่เลือก
-    lineChart.data.datasets[0].pointBackgroundColor =
-        DATA.totalPop.map((_, i) => i === idx ? SEA : "#b7d7d5");
-
-    lineChart.data.datasets[1].pointBackgroundColor =
-        DATA.thaiPop.map((_, i) => i === idx ? SEA_LT : "#d7ecea");
-
-    lineChart.data.datasets[2].pointBackgroundColor =
-        DATA.foreignPop.map((_, i) => i === idx ? CORAL : "#f6c4b8");
-
-    // กราฟแท่งยังแสดงเดือนเดียวเหมือนเดิม
     bdChart.data.labels = [MONTHS_FULL[idx]];
     bdChart.data.datasets[0].data = [DATA.birth[idx]];
     bdChart.data.datasets[1].data = [DATA.death[idx]];
@@ -243,7 +218,6 @@ function updateAll(idx) {
     moveChart.data.labels = [MONTHS_FULL[idx]];
     moveChart.data.datasets[0].data = [DATA.moveIn[idx]];
     moveChart.data.datasets[1].data = [DATA.moveOut[idx]];
-
 
     document.getElementById('sub-line').textContent = `ประชากรรวม · คนไทย · ต่างชาติ · ${MONTHS_FULL[idx]}`;
     document.getElementById('sub-bd').textContent   = `จำนวนการเกิด–ตาย · ${MONTHS_FULL[idx]}`;
@@ -265,26 +239,21 @@ function updateAll(idx) {
   if (isAll) {
     const totals = DATA.districts.map(d => ({
       name: d.name,
-      v: d.v.reduce((a,b) => a+b, 0)/d.v.length
+      v: d.v.reduce((a, b) => a + b, 0) / d.v.length
     }));
-        const sorted = [...totals].sort((a, b) => b.v - a.v);
+    const sorted = [...totals].sort((a, b) => b.v - a.v);
     distChart.data.labels = sorted.map(d => d.name);
     distChart.data.datasets[0].data = sorted.map(d => Math.round(d.v));
     distChart.data.datasets[0].backgroundColor = getDistColors(sorted.map(d => d.v));
-    document.getElementById('sub-dist').textContent = `เรียงมาก–น้อย · 16 สำนักทะเบียน · ทั้ง 6 เดือน (เฉลี่ย)`;
-    distChart.update();
-  
+    document.getElementById('sub-dist').textContent = `เรียงมาก–น้อย · 16 สำนักทะเบียน · เฉลี่ยทั้ง 6 เดือน`;
   } else {
-      const distI = idx;
-    const sorted = [...DATA.districts].sort((a, b) => b.v[distI] - a.v[distI]);
+    const sorted = [...DATA.districts].sort((a,b) => b.v[idx] - a.v[idx]);
     distChart.data.labels = sorted.map(d => d.name);
-    distChart.data.datasets[0].data = sorted.map(d => d.v[distI]);
-    distChart.data.datasets[0].backgroundColor = getDistColors(sorted.map(d => d.v[distI]));
+    distChart.data.datasets[0].data = sorted.map(d => d.v[idx]);
+    distChart.data.datasets[0].backgroundColor = getDistColors(sorted.map(d => d.v[idx]));
     document.getElementById('sub-dist').textContent = `เรียงมาก–น้อย · 16 สำนักทะเบียน · ${MONTHS_FULL[idx]}`;
-    distChart.update();
-  
   }
-    
+  distChart.update();
 }
 
 /* ══════════════════════════════════════════
@@ -293,14 +262,8 @@ function updateAll(idx) {
 document.getElementById('monthPills').addEventListener('click', e => {
   const btn = e.target.closest('.pill');
   if (!btn) return;
-
-  // ลบ active class จากทุก pill
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-  
-  // เพิ่ม active class ให้ pill ที่คลิก
   btn.classList.add('active');
-
-  // อัปเดตข้อมูล
   const raw = btn.dataset.idx;
   updateAll(raw === 'all' ? 'all' : parseInt(raw));
 });
