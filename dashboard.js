@@ -262,13 +262,29 @@ function updateAll(idx) {
   ageChart.update();
 
   /* ── District chart ── */
-  const distI = isAll ? 5 : idx;
-  const sorted = [...DATA.districts].sort((a,b)=>b.v[distI]-a.v[distI]);
-  distChart.data.labels = sorted.map(d=>d.name);
-  distChart.data.datasets[0].data = sorted.map(d=>d.v[distI]);
-  distChart.data.datasets[0].backgroundColor = getDistColors(sorted.map(d=>d.v[distI]));
-  document.getElementById('sub-dist').textContent = `เรียงมาก–น้อย · 16 สำนักทะเบียน · ${isAll ? 'พ.ค. 69' : MONTHS_FULL[idx]}`;
-  distChart.update();
+  if (isAll) {
+    const totals = DATA.districts.map(d => ({
+      name: d.name,
+      v: d.v.reduce((a,b) => a+b, 0)/d.v.length
+    }));
+        const sorted = [...totals].sort((a, b) => b.v - a.v);
+    distChart.data.labels = sorted.map(d => d.name);
+    distChart.data.datasets[0].data = sorted.map(d => Math.round(d.v));
+    distChart.data.datasets[0].backgroundColor = getDistColors(sorted.map(d => d.v));
+    document.getElementById('sub-dist').textContent = `เรียงมาก–น้อย · 16 สำนักทะเบียน · ทั้ง 6 เดือน (เฉลี่ย)`;
+    distChart.update();
+  
+  } else {
+      const distI = idx;
+    const sorted = [...DATA.districts].sort((a, b) => b.v[distI] - a.v[distI]);
+    distChart.data.labels = sorted.map(d => d.name);
+    distChart.data.datasets[0].data = sorted.map(d => d.v[distI]);
+    distChart.data.datasets[0].backgroundColor = getDistColors(sorted.map(d => d.v[distI]));
+    document.getElementById('sub-dist').textContent = `เรียงมาก–น้อย · 16 สำนักทะเบียน · ${MONTHS_FULL[idx]}`;
+    distChart.update();
+  
+  }
+    
 }
 
 /* ══════════════════════════════════════════
