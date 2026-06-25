@@ -189,63 +189,6 @@ body {
   border-style: solid;
 }
 
-/* ══ MONTH NAV ══════════════════════════════════════════ */
-.month-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.month-scroller {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--mist);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 8px;
-}
-
-.month-display {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--sea);
-  min-width: 68px;
-  text-align: center;
-  letter-spacing: 0.3px;
-}
-
-.nav-arrow {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  transition: background 0.15s, color 0.15s;
-  font-size: 14px;
-}
-
-.nav-arrow:hover {
-  background: var(--sea);
-  color: var(--white);
-}
-
-.nav-arrow:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
-.nav-arrow:disabled:hover {
-  background: none;
-  color: var(--text-2);
-}
-
 /* ══ KPI GRID ════════════════════════════════════════════ */
 .kpi-grid {
   display: grid;
