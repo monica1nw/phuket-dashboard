@@ -268,40 +268,24 @@ function updateAll(idx) {
 }
 
 /* ══════════════════════════════════════════
-   MONTH NAVIGATOR
+   PILL BUTTONS
 ══════════════════════════════════════════ */
-let currentIdx = 'all';
-const TOTAL = MONTHS_LABEL.length;
+document.getElementById('monthPills').addEventListener('click', e => {
+  const btn = e.target.closest('.pill');
+  if (!btn) return;
 
-function setActive(idx) {
-  currentIdx = idx;
-  const isAll = idx === 'all';
+  // ลบ active class จากทุก pill
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  
+  // เพิ่ม active class ให้ pill ที่คลิก
+  btn.classList.add('active');
 
-  document.getElementById('btnAll').classList.toggle('active', isAll);
-
-  const display = document.getElementById('monthDisplay');
-  display.textContent = isAll ? '—' : MONTHS_LABEL[idx];
-  display.style.color = isAll ? 'var(--text-3)' : 'var(--sea)';
-
-  document.getElementById('btnPrev').disabled = isAll || idx === 0;
-  document.getElementById('btnNext').disabled = isAll || idx === TOTAL - 1;
-
-  updateAll(idx);
-}
-
-document.getElementById('btnAll').addEventListener('click', () => setActive('all'));
-
-document.getElementById('btnPrev').addEventListener('click', () => {
-  if (currentIdx === 'all') return;
-  if (currentIdx > 0) setActive(currentIdx - 1);
+  // อัปเดตข้อมูล
+  const raw = btn.dataset.idx;
+  updateAll(raw === 'all' ? 'all' : parseInt(raw));
 });
 
-document.getElementById('btnNext').addEventListener('click', () => {
-  if (currentIdx === 'all') {
-    setActive(0);
-  } else if (currentIdx < TOTAL - 1) {
-    setActive(currentIdx + 1);
-  }
-});
+document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+document.querySelector('.pill[data-idx="all"]').classList.add('active');
 
-setActive('all');
+updateAll('all');
